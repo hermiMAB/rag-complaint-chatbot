@@ -1,0 +1,28 @@
+# --- Project Data & Models ---
+# Ignore original datasets and cleaned/feature-engineered data [cite: 84, 85]
+data/raw/*csv
+data/processed/*csv
+data/processed/*npy
+
+
+# Ignore saved model artifacts [cite: 97]
+models/
+*.pkl
+*.joblib
+*.h5
+
+# --- Jupyter Notebooks ---
+.ipynb_checkpoints/
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# --- Environments ---
+.env
+.venv
+venv/
+ENV/
+env/
