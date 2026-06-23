@@ -26,3 +26,5 @@ __pycache__/
 venv/
 ENV/
 env/
+vector_store
+notebooks/vector_store
