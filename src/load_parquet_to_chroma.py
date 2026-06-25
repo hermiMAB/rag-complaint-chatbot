@@ -37,39 +37,39 @@ def load_prebuilt_store(parquet_file_path: str, chroma_dir: str = "vector_store/
         embeddings = []
         metadatas = []
         
+       
         for idx, row in batch_df.iterrows():
-            # Generate a unique ID for each chunk
-            ids.append(f"chunk_{idx}")
-            
-            # The actual text paragraph
-            # Adjust the column name 'text' or 'chunk' based on what your instructors named it
-            documents.append(str(row.get("text", row.get("chunk", ""))))
-            
-            # The pre-calculated math vector
-            # Parquet sometimes saves lists as strings, this ensures it's a list of floats
-            emb = row.get("embedding", row.get("embeddings", []))
-            if isinstance(emb, str):
-                emb = ast.literal_eval(emb)
-            embeddings.append(list(emb))
-            
-            # The sticky notes (metadata)
-            meta = {
-                "Product": str(row.get("product", "Unknown")),        # Matches your "product" field
-                "Issue": str(row.get("issue", "Unknown")),            # Matches your "issue" field
-                "Complaint ID": str(row.get("complaint_id", "Unknown")), # Matches your "complaint_id" field
-                "Company": str(row.get("company", "Unknown")),        # NEW: Adding missing info
-                "State": str(row.get("state", "Unknown")),            # NEW: Adding missing info
-                "Category": str(row.get("product_category", "Unknown")) # NEW: Adding missing info
-            }
-            metadatas.append(meta)
-            
-        # 4. Add the batch to ChromaDB
+                    # Generate a unique ID for each chunk
+                    ids.append(f"chunk_{idx}")
+                    
+                    # 1. Extract the document text
+                    documents.append(str(row.get("document", "")))
+
+                    # 2. Extract embeddings
+                    emb = row.get("embedding", [])
+                    if isinstance(emb, str):
+                        emb = ast.literal_eval(emb)
+                    embeddings.append(list(emb))
+
+                    # 3. Extract and parse the nested metadata dictionary
+                    raw_meta = row.get("metadata", {})
+                    if isinstance(raw_meta, str):
+                        raw_meta = ast.literal_eval(raw_meta)
+
+                    # 4. Map the fields (ONLY ONCE)
+                    metadatas.append({
+                        "Product": str(raw_meta.get("product", "Unknown")),
+                        "Issue": str(raw_meta.get("issue", "Unknown")),
+                        "Complaint ID": str(raw_meta.get("complaint_id", "Unknown"))
+                    })
+                    
+                # 5. Add the batch to ChromaDB
         collection.add(
-            ids=ids,
-            documents=documents,
-            embeddings=embeddings,
-            metadatas=metadatas
-        )
+                    ids=ids,
+                    documents=documents,
+                    embeddings=embeddings,
+                    metadatas=metadatas
+                )
         
     print(f"✅ Successfully ingested {len(df)} pre-built vectors into {chroma_dir}!")
 
