@@ -49,9 +49,12 @@ def load_prebuilt_store(parquet_file_path: str, chroma_dir: str = "vector_store/
             
             # The sticky notes (metadata)
             meta = {
-                "Product": str(row.get("Product", "Unknown")),
-                "Issue": str(row.get("Issue", "Unknown")),
-                "Complaint ID": str(row.get("Complaint ID", "Unknown"))
+                "Product": str(row.get("product", "Unknown")),        # Matches your "product" field
+                "Issue": str(row.get("issue", "Unknown")),            # Matches your "issue" field
+                "Complaint ID": str(row.get("complaint_id", "Unknown")), # Matches your "complaint_id" field
+                "Company": str(row.get("company", "Unknown")),        # NEW: Adding missing info
+                "State": str(row.get("state", "Unknown")),            # NEW: Adding missing info
+                "Category": str(row.get("product_category", "Unknown")) # NEW: Adding missing info
             }
             metadatas.append(meta)
             
