@@ -9,6 +9,11 @@ def load_prebuilt_store(parquet_file_path: str, chroma_dir: str = "vector_store/
     
     # 1. Read the provided parquet file
     df = pd.read_parquet(parquet_file_path)
+    print("--- DATA DIAGNOSTIC ---")
+    print("Available columns in your file:", df.columns.tolist())
+    # Print the first row as a dictionary to see exact keys and values
+    print("First row data:", df.iloc[0].to_dict()) 
+    print("-----------------------")
     print(f"Loaded {len(df)} rows from Parquet file.")
     
     # 2. Initialize ChromaDB
